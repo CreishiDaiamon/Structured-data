@@ -82,7 +82,7 @@ enemy enemies[6]{
     {"Red Buff",2100,80,3},                             //Nombre, Vida, Daño
     {"Dragón",3500,100,3},                              //Nombre, Vida, Daño
     {"Heraldo",8000,120,4,},                            //Nombre, Vida, Daño
-    {"Dragón Ancestral",6400,150,2},                    //Nombre, Vida, Daño
+    {"Dragon Ancestral",6400,150,2},                    //Nombre, Vida, Daño
 };
 
 //Prototipos de Funciones
@@ -204,7 +204,7 @@ void Rondas (champ &p, skills &s, enemy &e, int l)
 
         if(cont_h_cd==3)
         {                                                                   //Automáticamente asigna un valor cualquiera a
-            std::cout<<"Todas las habilidades están en cd"<<std::endl;      //habilidad para que el switch de las habilidades
+            std::cout<<"Todas las habilidades estan en cd"<<std::endl;      //habilidad para que el switch de las habilidades
             habilidad='c';                                                  //(no pregunta que habilidad quiere usar ya que no hay)
         }else
         {
@@ -212,7 +212,7 @@ void Rondas (champ &p, skills &s, enemy &e, int l)
             std::cin>>habilidad;                                                
             while (habilidad != 'q' && habilidad != 'w' && habilidad != 'e' && habilidad != 'r' )
             {
-                std::cout<<"La opción seleccionada no esta dentro de las opciones. Seleccione 'q', 'w', 'e' o 'r'"  //Validación
+                std::cout<<"La opcion seleccionada no esta dentro de las opciones. Seleccione 'q', 'w', 'e' o 'r'"  //Validación
                 <<std::endl;                                                                                        //de datos
                 std::cin>>habilidad;
             }
@@ -231,7 +231,7 @@ void Rondas (champ &p, skills &s, enemy &e, int l)
                         std::cin>>habilidad;
                         while (habilidad != 'q' && habilidad != 'w' && habilidad != 'e' && habilidad != 'r' )
                         {
-                            std::cout<<"La opción seleccionada no esta dentro de las opciones. Seleccione 'q', 'w', 'e' o 'r'"
+                            std::cout<<"La opcion seleccionada no esta dentro de las opciones. Seleccione 'q', 'w', 'e' o 'r'"
                             <<std::endl;                               
                             std::cin>>habilidad;                        //Validación de datos
                         }
@@ -249,7 +249,7 @@ void Rondas (champ &p, skills &s, enemy &e, int l)
                     std::cin>>habilidad;
                         while (habilidad != 'q' && habilidad != 'w' && habilidad != 'e' )
                         {
-                        std::cout<<"La opción seleccionada no esta dentro de las opciones. Seleccione 'q', 'w' o 'e' "
+                        std::cout<<"La opcion seleccionada no esta dentro de las opciones. Seleccione 'q', 'w' o 'e' "
                         <<std::endl;
                         }
                     }
@@ -346,7 +346,7 @@ void EnemyAttack(champ &p, skills &s, enemy &e, int l)
         e.status_cc=0;
     }else if(cont_enemy<=0)                     //Se asegura que el enemigo que no esta bajo efectos de 
     {                                           //control ataque
-    std::cout<<"\n\n"<<e.enemy_name<<" da un ataque básico."<<std::endl;
+    std::cout<<"\n\n"<<e.enemy_name<<" da un ataque basico."<<std::endl;
     p.hp[l]-=e.dam;
     cont_enemy=e.cd;
     }else                                       //Delay de ataque del enemigo (CD)
@@ -374,17 +374,17 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
 
     if(cont_a_pas==0)                   //La pasiva está disponible y ejecuta este bloque
     {
-        s_print("Aatrox usa 'Heraldo de la Destrucción'. Haciendo daño adicional y curándose.");std::cout<<std::endl;
+        s_print("Aatrox usa 'Heraldo de la Destrucción'. Haciendo damage adicional y curándose.");std::cout<<std::endl;
         int damage=s.p_dam[l]*(enemies[ronda-1].hp);
         p.hp[l]+=damage;
         e.hp=e.hp-damage-p.dam[l];      //Conjunto de sentencias que hacen funcionar la pasiva de AAtrox
-        s_print("Aatrox hace ");std::cout<<damage+p.dam[l];s_print(" de daño");std::cout<<std::endl;
+        s_print("Aatrox hace ");std::cout<<damage+p.dam[l];s_print(" de damage");std::cout<<std::endl;
         s_print("Aatrox se cura por ");std::cout<<damage<<std::endl;
         
         cont_a_pas=4;
     }else                               //Si no está disponible, solo hace un ataque básico
     {
-        s_print("Aatrox da un ataque básico, haciendo ");std::cout<<p.dam[l];s_print(" de daño");std::cout<<std::endl;
+        s_print("Aatrox da un ataque basico, haciendo ");std::cout<<p.dam[l];s_print(" de damage");std::cout<<std::endl;
         e.hp-=p.dam[l];
     }
 
@@ -404,12 +404,12 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
                     if(e_status==0)
                     {
                         TotalDamage=1.5*s.q_dam[l];     //Hace daño extra si el estado de Aatrox es "a rango" (e_status=0)
-                        s_print("Aatrox usa 'La Espada Darkin'. *CLINK* Has dado con el filo de la espada. Haces ");std::cout<<TotalDamage;s_print(" de daño");std::cout<<std::endl;
+                        s_print("Aatrox usa 'La Espada Darkin'. *CLINK* Has dado con el filo de la espada. Haces ");std::cout<<TotalDamage;s_print(" de damage");std::cout<<std::endl;
                         e.hp-=TotalDamage;
                     }else                               //Hace el daño normal de la habilidad
                     {
                         TotalDamage=s.q_dam[l];
-                        s_print("Aatrox usa 'La Espada Darkin'. Haces ");std::cout<<TotalDamage;s_print(" de daño");std::cout<<std::endl;
+                        s_print("Aatrox usa 'La Espada Darkin'. Haces ");std::cout<<TotalDamage;s_print(" de damage");std::cout<<std::endl;
                         e.hp-=TotalDamage;
                     }
                     cooldowns[1]=1;                 //Hay que esperar un turno para poder tirar la siguiente
@@ -417,11 +417,11 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
                 case 2:                 //Activación de la segunda 'q' de Aatrox
                     if(e_status==0)
                     {                                   //No hace daño si e_status=0 (está a rango)
-                        s_print("Aatrox usa 'La Espada Darkin'. Pero falló.");std::cout<<std::endl;
+                        s_print("Aatrox usa 'La Espada Darkin'. Pero fallo.");std::cout<<std::endl;
                     }else
                     {                                   //Hace daño extra si el estado de Aatrox es "a melee" (e_status=1)
                         TotalDamage=1.75*s.q_dam[l];
-                        s_print("Aatrox usa 'La Espada Darkin'. *CLINK* Has dado con el filo de la espada. Haces ");std::cout<<TotalDamage;s_print(" de daño");std::cout<<std::endl;
+                        s_print("Aatrox usa 'La Espada Darkin'. *CLINK* Has dado con el filo de la espada. Haces ");std::cout<<TotalDamage;s_print(" de damage");std::cout<<std::endl;
                         e.hp-=TotalDamage;
                         cooldowns[1]=1;             //Hay que esperar un turno para poder tirar la siguiente
                     }
@@ -429,11 +429,11 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
                 case 3:                 //Activación de la tercera 'q' de Aatrox
                     if(e_status==0)
                     {                                   //No hace daño si e_status=0 (está a rango)
-                        s_print("Aatrox usa 'La Espada Darkin'. Pero falló.");
+                        s_print("Aatrox usa 'La Espada Darkin'. Pero fallo.");
                     }else
                     {                                   //Hace daño extra si el estado de Aatrox es "a melee" (e_status=1)
                         TotalDamage=2*s.q_dam[l];       
-                        s_print("Aatrox usa 'La Espada Darkin'. *CLINK* Has dado con el filo de la espada. Haces ");std::cout<<TotalDamage;s_print(" de daño");std::cout<<std::endl;
+                        s_print("Aatrox usa 'La Espada Darkin'. *CLINK* Has dado con el filo de la espada. Haces ");std::cout<<TotalDamage;s_print(" de damage");std::cout<<std::endl;
                         e.hp-=TotalDamage;
                         cont_q=0;
                         cooldowns[1]=2;             //CD de la habilidad al terminar
@@ -443,8 +443,8 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
         break;
         case 'w':                       //Sentencias para la activación de la 'w' de Aatrox
             TotalDamage=s.w_dam[l];
-            s_print("Aatrox usa 'Cadenas Infernales'. Hace ");std::cout<<TotalDamage;s_print(" de daño.");std::cout<<std::endl;
-            s_print("Aatrox ata el alma de su enemigo, lo cual lo stuneará dentro de 2 turnos.");std::cout<<std::endl;
+            s_print("Aatrox usa 'Cadenas Infernales'. Hace ");std::cout<<TotalDamage;s_print(" de damage.");std::cout<<std::endl;
+            s_print("Aatrox ata el alma de su enemigo, lo cual lo estuneara dentro de 2 turnos.");std::cout<<std::endl;
             e.hp-=TotalDamage;
             cooldowns[2]=s.w_cd[l];
         break;
@@ -476,7 +476,7 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
         ExtraDamage=TotalDamage*s.r_dam[l];     //Daño extra
         e.hp-=ExtraDamage;
         TrueTotalDamage=TotalDamage+ExtraDamage;
-        s_print("Aatrox utiliza su poder demoníaco para hacer ");std::cout<<ExtraDamage,s_print(" de daño adicional\n");
+        s_print("Aatrox utiliza su poder demoniaco para hacer ");std::cout<<ExtraDamage,s_print(" de daamge adicional\n");
         std::cout<<"Aatrox se cura por "<<s.r_heal[l]*TrueTotalDamage<<" de vida"<<std::endl;
         cont_aatrox_r--;
     }else if(cont_aatrox_r==0)                  //Informa al jugador que se han acabado los efectos de la 'r'
@@ -514,7 +514,7 @@ void Annie(champ &p, skills &s, enemy &e, int l){
             //Sentencias de la 'e' de Annie
         case 'e':
             s_print("Has utilizado 'Escudo Fundido'. Recibes un escudo de ");std::cout<<s.e_shield[l];s_print(" de vida.");std::cout<<"\n";
-            s_print("Los enemigos reciben ");std::cout<<s.e_dam[l];s_print(" de daño al atacarte durante los siguientes 2 turnos.");std::cout<<"\n";
+            s_print("Los enemigos reciben ");std::cout<<s.e_dam[l];s_print(" de damage al atacarte durante los siguientes 2 turnos.");std::cout<<"\n";
             p.hp[l] +=s.e_shield[l];
             e_used=1;
             cooldowns[3]=s.e_cd[l];
@@ -536,7 +536,7 @@ void Annie(champ &p, skills &s, enemy &e, int l){
 
     if(cont_p==4)                                               //Sentencias que hacen funcionar la pasiva de Annie
     {                                                           //Al cuarto ataque el enemigo no podrá atacar
-        s_print("\nHas stuneado al enemigo");std::cout<<"\n";
+        s_print("\nHas estuneado al enemigo");std::cout<<"\n";
         e.status_cc=1;
         cont_p=0;
     }
@@ -584,7 +584,7 @@ void Jhin(champ &p, skills &s, enemy &e, int l)
             //Sentencias de la 'e' de Jhin
         case 'e':
             s_print("Has utilizado 'Audiencia cautiva'. ");;std::cout<<"\n";
-            s_print("Los enemigos reciben ");std::cout<<s.e_dam[l];s_print(" de daño ");std::cout<<"\n";
+            s_print("Los enemigos reciben ");std::cout<<s.e_dam[l];s_print(" de damage ");std::cout<<"\n";
             p.hp[l] +=s.e_shield[l];
             cooldowns[3]=s.e_cd[l];
 
@@ -605,7 +605,7 @@ void Jhin(champ &p, skills &s, enemy &e, int l)
             break;
             //Sentencias en el caso de tener 0 habilidades disponibles
         default:
-            s_print("Ninguna habilidad está disponible.");std::cout<<"\n";
+            s_print("Ninguna habilidad esta disponible.");std::cout<<"\n";
         break;
     }
     totaldamage = p.dam[l];
