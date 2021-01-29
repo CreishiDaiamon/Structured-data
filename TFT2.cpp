@@ -461,7 +461,7 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
             cooldowns[3]=s.w_cd[l];
         break;
         case 'r':                       //Sentencias para la activación de la 'r' de Aatrox
-            s_print("Aatrox usa 'Destructor de Mundos'. Aumentando su daño y curaciones.");std::cout<<std::endl;
+            s_print("Aatrox usa 'Destructor de Mundos'. Aumentando su damage y curaciones.");std::cout<<std::endl;
             r_used=1;                   //Determina que la habilidad está activa
             cont_aatrox_r=8;            //Numero de turnos que permanece activo el efecto
         break;
@@ -476,7 +476,7 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
         ExtraDamage=TotalDamage*s.r_dam[l];     //Daño extra
         e.hp-=ExtraDamage;
         TrueTotalDamage=TotalDamage+ExtraDamage;
-        s_print("Aatrox utiliza su poder demoniaco para hacer ");std::cout<<ExtraDamage,s_print(" de daamge adicional\n");
+        s_print("Aatrox utiliza su poder demoniaco para hacer ");std::cout<<ExtraDamage,s_print(" de damage adicional\n");
         std::cout<<"Aatrox se cura por "<<s.r_heal[l]*TrueTotalDamage<<" de vida"<<std::endl;
         cont_aatrox_r--;
     }else if(cont_aatrox_r==0)                  //Informa al jugador que se han acabado los efectos de la 'r'
