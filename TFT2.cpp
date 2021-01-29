@@ -27,8 +27,7 @@ struct skills
     int w_cd[4];            //Estructura para guardar las estadisticas de las habilidades            
     //E                     //dam = daño
     int e_dam[4];           //cd = cooldown = turnos en los que la habilidad se recarga 
-    int e_cd[4];            //shield = escudo = vida adicional agregada sobre la vida
-    int e_heal[4];          
+    int e_cd[4];            //shield = escudo = vida adicional agregada sobre la vida          
     int e_shield[4];
     //R
     double r_dam[3];
@@ -38,7 +37,7 @@ struct skills
 struct enemy
 {                               //Estadisticas de los enemigos
     std::string enemy_name;     //Nombre del enemigo
-    int hp;                     //Vida del enemigo
+    double hp;                     //Vida del enemigo
     int dam;                    //Daño del enemigo
     int cd;                     //Turnos en los que el enemigo no ataca
     bool status_cc;             //Define si el enemigo esta en cc (si puede atacar o no, 0 = si puede                               
@@ -90,7 +89,7 @@ int Attack(champ&, skills&, enemy&, int);               //Función que seleccion
                                                         //basado en el campeón elegido
 int Selec();                                            //Función para seleccionar personajes
 void s_print(const std::string&);                       //Permite imprimir caracteres uno a uno (Impresión continua)
-void Rondas(champ&, skills&, enemy&, int);              //Se encarga de ejecutar las rondas (peleas de varios turnos contra un enemigo)
+void Rondas(champ&, skills&, enemy&, int&);              //Se encarga de ejecutar las rondas (peleas de varios turnos contra un enemigo)
 void FightWindow(champ&, skills&, enemy&, int);         //Una interfaz que muestra stats de vida y las habiidades disponibles
 
 void Aatrox(champ&, skills&, enemy&, int);             
@@ -106,7 +105,7 @@ int cooldowns[4]={0, 0, 0, 0};          //Array que contiene los cooldowns de la
 char habilidad;                         //Variable de entrada que define que habilidad se va a usar
 
 bool r_used=0,e_status=0,e_used=0;      //Ayudan a determinar si ciertas habilidades están activas para otorgar sus efectos
-
+double TrueTotalDamage, ExtraDamage;    //Daño para Aatrox
 int cd_check=0,                         //Ayuda en la función cd_test, comprobando que el valor cooldowns[cd_check] sea 0                       //
     ronda=1,                            //Determina el numero de ronda actual y elige los stats del enemigo del array enemies[ronda-1]
     num,                                //Num para elegir personaje
@@ -150,7 +149,7 @@ int main ()
         if(ronda==2 || ronda==4||ronda==6)                  //Determina si el jugador ha llegado a la ronda designada
         {                                                   //Para subir de nivel
             lvl++;
-            s_print("\n¡Has subido de nivel!\n\nPresione enter para continuar");
+            s_print("\nHas subido de nivel!\n\nPresione enter para continuar");
             std::cin.ignore();
             std::cin.get();                                 //Un presiona enter para continuar, se encuentra en varias partes 
             std::system("cls");                             //del programa
@@ -181,8 +180,9 @@ int Selec ()
     return champ;
 }
 
-void Rondas (champ &p, skills &s, enemy &e, int l)
+void Rondas (champ &p, skills &s, enemy &e, int &l)
 {
+    TrueTotalDamage=0, ExtraDamage=0;
     int turno=1;                            //Determina el turno actual dentro de la ronda     
     std::cout<<"El "<<e.enemy_name <<" ha aparecido!"<<std::endl;
 
@@ -210,11 +210,25 @@ void Rondas (champ &p, skills &s, enemy &e, int l)
         {
             std::cout<<"Que habilidad desea usar?(Q,w,E,R)"<<std::endl;     //Menú de selección de habilidades
             std::cin>>habilidad;                                                
-            while (habilidad != 'q' && habilidad != 'w' && habilidad != 'e' && habilidad != 'r' )
+            while (habilidad != 'q' && habilidad != 'w' && habilidad != 'e' && habilidad != 'r')
             {
                 std::cout<<"La opcion seleccionada no esta dentro de las opciones. Seleccione 'q', 'w', 'e' o 'r'"  //Validación
                 <<std::endl;                                                                                        //de datos
                 std::cin>>habilidad;
+            }
+
+            if(habilidad =='r'&& l==0 )      //Evita seleccionar r al nivel 1
+            {
+                while(habilidad=='r')
+                {
+                std::cout<<"La habilidad seleccionada se desbloquea en un nivel superior. Seleccione otra: "<<std::endl;
+                std::cin>>habilidad;
+                    while (habilidad != 'q' && habilidad != 'w' && habilidad != 'e' )
+                    {
+                    std::cout<<"La opcion seleccionada no esta dentro de las opciones. Seleccione 'q', 'w' o 'e' "
+                    <<std::endl;
+                    }
+                }
             }
             
             cd_test (cd_check);             //Verifica que la habilidad seleccionada esté disponible
@@ -223,62 +237,47 @@ void Rondas (champ &p, skills &s, enemy &e, int l)
             {
                 if(cooldowns[cd_check]!=0)
                 {
+                    std::cout<<"La habilidad seleccionada está en cooldown. Seleccione otra: "<<std::endl;  //Volver a ingresar
+                    std::cin>>habilidad;
+                    while (habilidad != 'q' && habilidad != 'w' && habilidad != 'e' && habilidad != 'r' )
+                    {
+                        std::cout<<"La opcion seleccionada no esta dentro de las opciones. Seleccione 'q', 'w', 'e' o 'r'"
+                        <<std::endl;                               
+                        std::cin>>habilidad;                        //Validación de datos
+                    }
                     if(r_used==0)           //Verifica que el ultimate (habilidad r) este disponible
                     {
                         break;              //de ser sóí sigue el programa
                     
-                        std::cout<<"La habilidad seleccionada está en cooldown. Seleccione otra: "<<std::endl;  //Volver a ingresar
-                        std::cin>>habilidad;
-                        while (habilidad != 'q' && habilidad != 'w' && habilidad != 'e' && habilidad != 'r' )
-                        {
-                            std::cout<<"La opcion seleccionada no esta dentro de las opciones. Seleccione 'q', 'w', 'e' o 'r'"
-                            <<std::endl;                               
-                            std::cin>>habilidad;                        //Validación de datos
-                        }
+                        
                         std::cout<<cont_h_cd;
                     }
                 cd_test(cd_check);          //Vuelve a ejecutar cd_test
                 }
-            
-                //R nivel 3
-                if(habilidad=='r'&& l==0 )      //Evita seleccionar r al nivel 1
-                {
-                    while(habilidad=='r')
-                    {
-                    std::cout<<"La habilidad seleccionada se desbloquea en un nivel superior. Seleccione otra: "<<std::endl;
-                    std::cin>>habilidad;
-                        while (habilidad != 'q' && habilidad != 'w' && habilidad != 'e' )
-                        {
-                        std::cout<<"La opcion seleccionada no esta dentro de las opciones. Seleccione 'q', 'w' o 'e' "
-                        <<std::endl;
-                        }
-                    }
-                }
-            }
+            }             
+        }   
+        std::system("cls");
 
-            std::system("cls");
+        Attack(p, s, e, l);
+        EnemyAttack(p, s, e, l);
+        
+        std::cout<<"\nHP enemigo: "<<e.hp<<"/"<<enemies[ronda-1].hp<<std::endl;     //Muestra los resultados del turno
+        std::cout<<"\nHP player: "<<p.hp[l]<<"/"<<champions->hp[l]<<std::endl;
+        turno++;
 
-            Attack(p, s, e, l);
-            EnemyAttack(p, s, e, l);
-            
-            std::cout<<"\nHP enemigo: "<<e.hp<<"/"<<enemies[ronda-1].hp<<std::endl;     //Muestra los resultados del turno
-            std::cout<<"\nHP player: "<<p.hp[l]<<"/"<<champions->hp[l]<<std::endl;
-            turno++;
-
-            s_print("\n\nPresione enter para continuar.");      //Presione enter para continuar
-            std::cin.ignore();
-            std::cin.get();
-            std::system("cls");                
-        }
-
-        std::cout<<"FIN DE RONDA"<<std::endl;       //Mensaje que indica que terminó la RONDA
-        ronda++;                                    //Aumenta el valor de ronda, pasa a la siguiente ronda
-
-        s_print("\n\nPresione enter para continuar.");          //Presione enter para continuar
+        s_print("\n\nPresione enter para continuar.");      //Presione enter para continuar
         std::cin.ignore();
         std::cin.get();
-        std::system("cls");    
+        std::system("cls");   
     }
+
+    std::cout<<"FIN DE RONDA"<<std::endl;       //Mensaje que indica que terminó la RONDA
+    ronda++;                                    //Aumenta el valor de ronda, pasa a la siguiente ronda
+
+    s_print("\n\nPresione enter para continuar.");          //Presione enter para continuar
+    std::cin.ignore();
+    std::cin.get();
+    std::system("cls"); 
 }
 
 
@@ -315,7 +314,6 @@ void cd_test(int &cd_check)
             cd_check=3;
         break;
         case 'r':
-
         break;
     }
 }
@@ -339,7 +337,6 @@ int Attack(champ &p, skills &s, enemy &e, int l){
 void EnemyAttack(champ &p, skills &s, enemy &e, int l)
 {
     cont_enemy--;                               //Reduce el CD del ataque del enemigo
-    std::cout<<"\n\n"<<cont_enemy<<"\n\n";
     if(e.status_cc==1)                          //Verifica si el enemigo está bajo efectos de control (si puede atacar o no)
     {
         std::cout<<"\n\nEnemigo stuneado. No puede moverse.";
@@ -369,12 +366,12 @@ void EnemyAttack(champ &p, skills &s, enemy &e, int l)
 
 void Aatrox(champ &p, skills &s, enemy &e, int l)
 {
-    int TotalDamage;                    //Variable usada para el calculo de los daños porcentuales
+    int TotalDamage=0;                  //Variable usada para el calculo de los daños porcentuales
     cont_a_pas--;                       //Contador de la disponibilidad de la pasiva
 
     if(cont_a_pas==0)                   //La pasiva está disponible y ejecuta este bloque
     {
-        s_print("Aatrox usa 'Heraldo de la Destrucción'. Haciendo damage adicional y curándose.");std::cout<<std::endl;
+        s_print("Aatrox usa 'Heraldo de la Destruccion'. Haciendo damage adicional y curandose.");std::cout<<std::endl;
         int damage=s.p_dam[l]*(enemies[ronda-1].hp);
         p.hp[l]+=damage;
         e.hp=e.hp-damage-p.dam[l];      //Conjunto de sentencias que hacen funcionar la pasiva de AAtrox
@@ -412,7 +409,7 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
                         s_print("Aatrox usa 'La Espada Darkin'. Haces ");std::cout<<TotalDamage;s_print(" de damage");std::cout<<std::endl;
                         e.hp-=TotalDamage;
                     }
-                    cooldowns[1]=1;                 //Hay que esperar un turno para poder tirar la siguiente
+                    cooldowns[1]=2;                 //Hay que esperar un turno para poder tirar la siguiente
                 break;
                 case 2:                 //Activación de la segunda 'q' de Aatrox
                     if(e_status==0)
@@ -423,7 +420,7 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
                         TotalDamage=1.75*s.q_dam[l];
                         s_print("Aatrox usa 'La Espada Darkin'. *CLINK* Has dado con el filo de la espada. Haces ");std::cout<<TotalDamage;s_print(" de damage");std::cout<<std::endl;
                         e.hp-=TotalDamage;
-                        cooldowns[1]=1;             //Hay que esperar un turno para poder tirar la siguiente
+                        cooldowns[1]=2;             //Hay que esperar un turno para poder tirar la siguiente
                     }
                 break;
                 case 3:                 //Activación de la tercera 'q' de Aatrox
@@ -436,7 +433,7 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
                         s_print("Aatrox usa 'La Espada Darkin'. *CLINK* Has dado con el filo de la espada. Haces ");std::cout<<TotalDamage;s_print(" de damage");std::cout<<std::endl;
                         e.hp-=TotalDamage;
                         cont_q=0;
-                        cooldowns[1]=2;             //CD de la habilidad al terminar
+                        cooldowns[1]=4;             //CD de la habilidad al terminar
                     }
                 break;
             }
@@ -444,7 +441,7 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
         case 'w':                       //Sentencias para la activación de la 'w' de Aatrox
             TotalDamage=s.w_dam[l];
             s_print("Aatrox usa 'Cadenas Infernales'. Hace ");std::cout<<TotalDamage;s_print(" de damage.");std::cout<<std::endl;
-            s_print("Aatrox ata el alma de su enemigo, lo cual lo estuneara dentro de 2 turnos.");std::cout<<std::endl;
+            s_print("Aatrox ata el alma de su enemigo, lo cual lo stuneara dentro de 2 turnos.");std::cout<<std::endl;
             e.hp-=TotalDamage;
             cooldowns[2]=s.w_cd[l];
         break;
@@ -466,20 +463,19 @@ void Aatrox(champ &p, skills &s, enemy &e, int l)
             cont_aatrox_r=8;            //Numero de turnos que permanece activo el efecto
         break;
         default:                        //En caso de no haber ninguna habilidad disponible
-            s_print("Ninguna habilidad está disponible.");std::cout<<"\n";
+            s_print("Ninguna habilidad esta disponible.");std::cout<<"\n";
         break;
     }
 
     if(r_used==1)                               //Verifica si la 'r' ha sido usada en esta ronda
     {                                           //en este caso hace daño extra y se cura un porcentaje del daño efectuado
-        double TrueTotalDamage, ExtraDamage;
         ExtraDamage=TotalDamage*s.r_dam[l];     //Daño extra
-        e.hp-=ExtraDamage;
+        e.hp=e.hp-ExtraDamage;
         TrueTotalDamage=TotalDamage+ExtraDamage;
         s_print("Aatrox utiliza su poder demoniaco para hacer ");std::cout<<ExtraDamage,s_print(" de damage adicional\n");
         std::cout<<"Aatrox se cura por "<<s.r_heal[l]*TrueTotalDamage<<" de vida"<<std::endl;
         cont_aatrox_r--;
-    }else if(cont_aatrox_r==0)                  //Informa al jugador que se han acabado los efectos de la 'r'
+    }else if(r_used==1 && cont_aatrox_r==0)                  //Informa al jugador que se han acabado los efectos de la 'r'
     {
         std::cout<<"\nLos efectos de 'Devorador de Mundos han acabado.";
         r_used=0;                               //Desactiva el efecto de la r
@@ -530,7 +526,7 @@ void Annie(champ &p, skills &s, enemy &e, int l){
             break;
             //Sentencias en el caso de tener 0 habilidades disponibles
         default:
-            s_print("Ninguna habilidad está disponible.");std::cout<<"\n";
+            s_print("Ninguna habilidad esta disponible.");std::cout<<"\n";
         break;
     }
 
@@ -608,24 +604,23 @@ void Jhin(champ &p, skills &s, enemy &e, int l)
             s_print("Ninguna habilidad esta disponible.");std::cout<<"\n";
         break;
     }
-    totaldamage = p.dam[l];
-    //Funcionamiento de la pasiva de Jhin, la cual en el 4to basico hace más daño 
+        totaldamage = p.dam[l];
+        //Funcionamiento de la pasiva de Jhin, la cual en el 4to basico hace más daño 
         if(cont_p==4)
-    {
-        totaldamage += e.hp*pextra[l];
-        s_print("\nCUATRO. Jhin da un basico potenciado ");std::cout<<"\n";
+        {
+            totaldamage += e.hp*pextra[l];
+            s_print("\nCUATRO. Jhin da un basico potenciado ");std::cout<<"\n";
+            s_print("\nDas un ataque basico. Haces ");std::cout<<totaldamage;s_print(" de damage.");std::cout<<"\n";
+            e.hp-=totaldamage;
+            cont_p=0;
+
+        }else
+        {
+        //Ataques básicos de Jhin   
         s_print("\nDas un ataque basico. Haces ");std::cout<<totaldamage;s_print(" de damage.");std::cout<<"\n";
         e.hp-=totaldamage;
-        cont_p=0;
-
-    }
-    else
-    {
-    //Ataques básicos de Jhin   
-    s_print("\nDas un ataque basico. Haces ");std::cout<<totaldamage;s_print(" de damage.");std::cout<<"\n";
-    e.hp-=totaldamage;
-    cont_p++;
-    }
+        cont_p++;
+        }
 
 }
 
